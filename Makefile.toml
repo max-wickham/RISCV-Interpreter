@@ -1,0 +1,33 @@
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--emit=files"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.setup-python]
+command = "poetry"
+args = ["install","-C","./test_gen"]
+
+[tasks.build]
+command = "cargo"
+args = ["build"]
+dependencies = ["clean","setup-python"]
+
+[tasks.test-gen]
+command = "poetry"
+args = ["run", "-C","./test_gen","python","./test_gen/convert.py"]
+
+[tasks.test]
+command = "cargo"
+args = ["test"]
+dependencies = ["clean"]
+
+[tasks.my-flow]
+dependencies = [
+    "format",
+    "build",
+    "test"
+]

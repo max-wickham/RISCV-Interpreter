@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "test-gen"
+version = "0.1.0"
+description = ""
+authors = ["max <maxwickham@startmail.com>"]
+readme = "README.md"
+packages = [{include = "test_gen"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+riscv-assembler = "^1.2.1"
+tinyfive = "^1.0.0"
+pytest = "^7.4.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
