@@ -16,6 +16,10 @@ command = "cargo"
 args = ["build"]
 dependencies = ["clean","setup-python"]
 
+[tasks.test-test-gen]
+command = "poetry"
+args = ["run","-C","./test_gen","pytest"]
+
 [tasks.test-gen]
 command = "poetry"
 args = ["run", "-C","./test_gen","python","./test_gen/convert.py"]
@@ -23,7 +27,12 @@ args = ["run", "-C","./test_gen","python","./test_gen/convert.py"]
 [tasks.test]
 command = "cargo"
 args = ["test"]
-dependencies = ["clean"]
+dependencies = ["clean","test-test-gen","test-gen"]
+
+[tasks.test-noisy]
+command = "cargo"
+args = ["test","--", "--nocapture"]
+dependencies = ["build","test-test-gen","test-gen"]
 
 [tasks.my-flow]
 dependencies = [

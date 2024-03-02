@@ -1,0 +1,81 @@
+use std::str::FromStr;
+use crate::assembler::ast::{Line, ASTInstruction, ASTLabel, ASTWord, LineList};
+use crate::assembler::utils::append;
+
+grammar;
+
+// TODO remove empty lines
+// TODD add semi colons
+// TODO remove commas
+
+pub Program: LineList = {
+    "{" <Lines> "}" => {
+        LineList::new(<>)
+    }
+}
+pub Lines: Vec<Box<Line>> = {
+    #[precedence(level="1")]
+    <l:Line> => {
+        vec![Box::new(l)]
+    },
+
+    #[precedence(level="0")]
+    <ls:Lines> <l:Line> => {
+        append(ls, Box::new(l))
+    },
+}
+
+pub Line: Line = {
+    #[precedence(level="13")]
+    <w:WordLine> => Line::ASTWord(Box::new(w)),
+    #[precedence(level="13")]
+    <i:InstructionLine> => Line::ASTInstruction(Box::new(i)),
+    #[precedence(level="13")]
+    <l:LabelLine> =>Line::ASTLabel(Box::new(l)),
+    #[precedence(level="12")]
+    <Line> ";" => <>,
+};
+
+InstructionLine: ASTInstruction = {
+    <TokenList> ";" => {
+        ASTInstruction::new(<>)
+    }
+}
+
+TokenList: Vec<String> = {
+    <Token> => {
+        vec![<>]
+    },
+
+    <TokenList> <Token> => {
+        append(<>)
+    }
+}
+
+LabelLine: ASTLabel = {
+    #[precedence(level="6")]
+    <l:LabelName> <ln:Line> => ASTLabel::new(l, Box::new(ln))
+};
+
+LabelName: String = {
+    #[precedence(level="5")]
+    <LabelName> ";" => <>,
+    #[precedence(level="4")]
+    <Token> ":" => <>,
+};
+
+WordLine: ASTWord = {
+    #[precedence(level="4")]
+    <w:WordIdentifier> <t:Token> => ASTWord::new(t)
+};
+
+WordIdentifier: String = {
+    #[precedence(level="0")]
+    <s:r"\.word"> => s.to_owned(),
+};
+
+Token: String = {
+    #[precedence(level="1")]
+    <s:r"[a-zA-Z][a-zA-z_0-9]*"> => s.to_owned(),
+    // "(" <Token> ")" => <>,
+};
