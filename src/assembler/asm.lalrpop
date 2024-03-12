@@ -4,22 +4,18 @@ use crate::assembler::utils::append;
 
 grammar;
 
-// TODO remove empty lines
-// TODD add semi colons
-// TODO remove commas
-
 pub Program: LineList = {
     "{" <Lines> "}" => {
         LineList::new(<>)
-    }
+    },
 }
 pub Lines: Vec<Box<Line>> = {
-    #[precedence(level="1")]
+    // #[precedence(level="15")]
     <l:Line> => {
         vec![Box::new(l)]
     },
 
-    #[precedence(level="0")]
+    // #[precedence(level="14")]
     <ls:Lines> <l:Line> => {
         append(ls, Box::new(l))
     },
@@ -35,20 +31,11 @@ pub Line: Line = {
     #[precedence(level="12")]
     <Line> ";" => <>,
 };
-
+    // <w
 InstructionLine: ASTInstruction = {
+    #[precedence(level="5")]
     <TokenList> ";" => {
         ASTInstruction::new(<>)
-    }
-}
-
-TokenList: Vec<String> = {
-    <Token> => {
-        vec![<>]
-    },
-
-    <TokenList> <Token> => {
-        append(<>)
     }
 }
 
@@ -66,16 +53,22 @@ LabelName: String = {
 
 WordLine: ASTWord = {
     #[precedence(level="4")]
-    <w:WordIdentifier> <t:Token> => ASTWord::new(t)
+    ".word" <t:TokenList> ";" => ASTWord::new(t)
 };
 
-WordIdentifier: String = {
-    #[precedence(level="0")]
-    <s:r"\.word"> => s.to_owned(),
-};
+TokenList: Vec<String> = {
+    <Token> => {
+        vec![<>]
+    },
+
+    <TokenList> <Token> => {
+        append(<>)
+    }
+}
 
 Token: String = {
     #[precedence(level="1")]
-    <s:r"[a-zA-Z][a-zA-z_0-9]*"> => s.to_owned(),
-    // "(" <Token> ")" => <>,
+    <s:r"[-_a-zA-Z_$0-9]+"> => s.to_owned(),
+    #[precedence(level="1")]
+    "(" <Token> ")" => <>,
 };

@@ -1,3 +1,4 @@
+workspace = { members = ["test_gen"] }
 [env]
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
 
@@ -17,6 +18,10 @@ bytemuck = "1.14.0"
 byteorder = "1.5.0"
 itertools = "0.12.1"
 lalrpop-util = { version = "0.20.2", features = ["lexer", "unicode"] }
+lazy_static = "1.4.0"
 phf = { version = "0.11.2", features = ["macros"] }
+quote = "1.0.35"
 serde = "1.0.193"
 serde_json = "1.0.108"
+syn = "2.0.52"
+test_gen = { path = "./test_gen" }

@@ -1,6 +1,6 @@
 use phf::phf_map;
 
-pub static OPCODE_BITS: phf::Map<String, String> = phf_map! {
+pub static OPCODE_BITS: phf::Map<&str, &str> = phf_map! {
     "add" => "0110011",
     "sub" => "0110011",
     "sll" => "0110011",
@@ -33,7 +33,7 @@ pub static OPCODE_BITS: phf::Map<String, String> = phf_map! {
     "sh" => "0100011",
 };
 
-pub static REGISTER_BITS: phf::Map<String, String> = phf_map! {
+pub static REGISTER_BITS: phf::Map<&str, &str> = phf_map! {
     "x0"=> "00000",
     "x1"=> "00001",
     "x2"=> "00010",
@@ -68,7 +68,7 @@ pub static REGISTER_BITS: phf::Map<String, String> = phf_map! {
     "x31"=> "11111",
 };
 
-pub static FUNCT_3_BITS: phf::Map<String, String> = phf_map! {
+pub static FUNCT_3_BITS: phf::Map<&str, &str> = phf_map! {
     "add" => "000",
     "sub" => "000",
     "sll" => "001",
@@ -97,7 +97,7 @@ pub static FUNCT_3_BITS: phf::Map<String, String> = phf_map! {
     "jalr" => "000",
 };
 
-pub static FUNCT_7_BITS: phf::Map<String, String> = phf_map! {
+pub static FUNCT_7_BITS: phf::Map<&str, &str> = phf_map! {
     "add" => "0000000",
     "sub" => "0100000",
     "sll" => "0000000",
@@ -116,10 +116,10 @@ pub static FUNCT_7_BITS: phf::Map<String, String> = phf_map! {
     "sb" => "0000000",
 };
 
-pub static R_TYPE_INSTRUCTIONS : [&str] = ["add","sub","sll","slt","sltu","xor","srl","sra","or","and"];
-pub static I_TYPE_INSTRUCTIONS : [&str] = ["addi","slti","sltiu","xori","ori","andi","slli","srli","srai","lb","lh","lw","lbu","lhu","jalr"];
-pub static S_TYPE_INSTRUCTIONS : [&str] = ["sb","sh","sw"];
-pub static U_TYPE_INSTRUCTIONS : [&str] = ["lui","auipc"];
-pub static B_TYPE_INSTRUCTIONS : [&str] = ["beq","bne","blt","bge","bltu","bgeu"];
-pub static J_TYPE_INSTRUCTIONS : [&str] = ["jal"];
-pub static BRACKET_INSTRUCTIONS :[&str]  = ["lb","lh","lw","lbu","lhu","sb","sh","sw","jalr"];
+pub static R_TYPE_INSTRUCTIONS : &[&str] = &["add","sub","sll","slt","sltu","xor","srl","sra","or","and"];
+pub static I_TYPE_INSTRUCTIONS : &[&str] = &["addi","slti","sltiu","xori","ori","andi","slli","srli","srai","lb","lh","lw","lbu","lhu","jalr"];
+pub static S_TYPE_INSTRUCTIONS : &[&str] = &["sb","sh","sw"];
+pub static U_TYPE_INSTRUCTIONS : &[&str] = &["lui","auipc"];
+pub static B_TYPE_INSTRUCTIONS : &[&str] = &["beq","bne","blt","bge","bltu","bgeu"];
+pub static J_TYPE_INSTRUCTIONS : &[&str] = &["jal"];
+pub static BRACKET_INSTRUCTIONS : &[&str]  = &["lb","lh","lw","lbu","lhu","sb","sh","sw","jalr"];

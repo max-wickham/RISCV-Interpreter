@@ -1,33 +1,18 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt};
 
-// pub trait ASTLine {
-//     // Methods for ASTLine
-//     // fn generate_byte_string(&self, index: isize, labels: &HashMap<&String, &String>);
-// }
-
-// macro_rules! line_struct {
-//     // Entry point for the macro
-//     ($struct_name:ident) => {
-//         // Implement methods for the struct
-//     };
-// }
-#[derive(PartialEq, Eq, Hash, Debug)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum Line {
     ASTLabel(Box<ASTLabel>),
     ASTInstruction(Box<ASTInstruction>),
     ASTWord(Box<ASTWord>),
 }
 
-#[derive(PartialEq, Eq, Hash, Debug)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub struct LineList{
-    lines: Vec<Box<Line>>,
+    pub lines: Vec<Box<Line>>,
 }
 
 impl LineList{
-
-    // pub fn add_line_front(&mut self, line: Box<Line>){
-    //     self.lines.insert(0, line);
-    // }
 
     pub fn new(lines:  Vec<Box<Line>>) -> Self {
         LineList {
@@ -36,14 +21,11 @@ impl LineList{
     }
 }
 
-#[derive(PartialEq, Eq, Hash, Debug)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub struct ASTLabel {
-    // A labeled AST line
-    label: String,
-    labelled_line: Box<Line>
-    // next_line: Option<&'a dyn ASTLine>,
+    pub label: String,
+    pub labelled_line: Box<Line>
 }
-// line_struct!(ASTLabel);
 
 impl ASTLabel {
     pub fn new(label: String, line: Box<Line>) -> Self {
@@ -54,13 +36,17 @@ impl ASTLabel {
     }
 }
 
-#[derive(PartialEq, Eq, Hash, Debug)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub struct ASTInstruction {
-    // A set of tokens forming an instruction
-    tokens: Vec<String>,
-    // next_line: Option<&'a dyn ASTLine>,
+    pub tokens: Vec<String>,
 }
-// line_struct!(ASTInstruction);
+
+impl fmt::Display for ASTInstruction {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // Define the custom formatting here
+        write!(f, "{:?}", self.tokens)
+    }
+}
 
 
 impl ASTInstruction {
@@ -69,23 +55,17 @@ impl ASTInstruction {
             tokens: tokens,
         }
     }
-
-    // pub fn add_token_front(&mut self, token: String) {
-    //     self.tokens.insert(0, token);
-    // }
 }
 
-#[derive(PartialEq, Eq, Hash, Debug)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub struct ASTWord {
-    // generated from a .word statement
-    token: String,
-    // next_line: Option<&'a dyn ASTLine>,
+    pub tokens: Vec<String>,
 }
-// line_struct!(ASTWord);
+
 impl  ASTWord {
-    pub fn new(token: String) -> Self {
+    pub fn new(tokens: Vec<String>) -> Self {
         ASTWord {
-            token: token,
+            tokens: tokens,
         }
     }
 }

@@ -6,7 +6,8 @@ use hardware::GPIOState;
 
 mod abi;
 mod hardware;
-mod assembler;
+pub mod assembler;
+mod riscv_spec;
 type SizeInt = u32;
 type RegisterValue = SizeInt;
 
