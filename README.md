@@ -12,4 +12,4 @@ The current implementation of the interpreter is hade written using match statem
 
 ## Tests
 
-Tests are currently defined in "tests/arithmetic_test.json" file and then a proc macro is used to convert these to rust functions.
+Tests are currently defined in "tests/arithmetic_test.json" file and then a proc macro is used to convert these to rust functions. In older commits the tests were generated using a python implementation of the assembler.
