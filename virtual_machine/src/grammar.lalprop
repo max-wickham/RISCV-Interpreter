@@ -1,0 +1,93 @@
+use std::str::FromStr;
+// use crate::assembler::ast::{Line, ASTInstruction, ASTLabel, ASTWord, LineList};
+// use crate::assembler::utils::append;
+use crate::ast::{ASTParameter, ASTValue};
+grammar;
+
+
+
+// parameter
+// value
+
+
+pub Parameter: ASTParameter = {
+    "parameter" <s:Name> "="
+}
+
+Name: String = {
+    #[precedence(level="1")]
+    <s:r"[-_a-zA-Z_$0-9]+"> => s.to_owned(),
+    #[precedence(level="1")]
+    "(" <Token> ")" => <>,
+};
+
+Name: String = {
+    #[precedence(level="1")]
+    <s:r"[0-9]+"> => s.to_owned(),
+    #[precedence(level="1")]
+    "(" <Token> ")" => <>,
+};
+
+
+
+// pub Program: LineList = {
+//     "{" <Lines> "}" => {
+//         LineList::new(<>)
+//     },
+// }
+// pub Lines: Vec<Box<Line>> = {
+//     // #[precedence(level="15")]
+//     <l:Line> => {
+//         vec![Box::new(l)]
+//     },
+
+//     // #[precedence(level="14")]
+//     <ls:Lines> <l:Line> => {
+//         append(ls, Box::new(l))
+//     },
+// }
+
+// pub Line: Line = {
+//     #[precedence(level="13")]
+//     <w:WordLine> => Line::ASTWord(Box::new(w)),
+//     #[precedence(level="13")]
+//     <i:InstructionLine> => Line::ASTInstruction(Box::new(i)),
+//     #[precedence(level="13")]
+//     <l:LabelLine> =>Line::ASTLabel(Box::new(l)),
+//     #[precedence(level="12")]
+//     <Line> ";" => <>,
+// };
+//     // <w
+// InstructionLine: ASTInstruction = {
+//     #[precedence(level="5")]
+//     <TokenList> ";" => {
+//         ASTInstruction::new(<>)
+//     }
+// }
+
+// LabelLine: ASTLabel = {
+//     #[precedence(level="6")]
+//     <l:LabelName> <ln:Line> => ASTLabel::new(l, Box::new(ln))
+// };
+
+// LabelName: String = {
+//     #[precedence(level="5")]
+//     <LabelName> ";" => <>,
+//     #[precedence(level="4")]
+//     <Token> ":" => <>,
+// };
+
+// WordLine: ASTWord = {
+//     #[precedence(level="4")]
+//     ".word" <t:TokenList> ";" => ASTWord::new(t)
+// };
+
+// TokenList: Vec<String> = {
+//     <Token> => {
+//         vec![<>]
+//     },
+
+//     <TokenList> <Token> => {
+//         append(<>)
+//     }
+// }

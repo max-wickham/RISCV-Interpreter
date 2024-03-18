@@ -93,6 +93,7 @@ extern crate toast_interpreter;
 // mod assembler;
 use test_gen::generate_tests;
 use toast_interpreter::assembler::assembler::assemble;
+use toast_interpreter::{CPUState, interpret_max_cycles};
 // generate_tests![
 //     {
 //         "name": "test_add",

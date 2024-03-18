@@ -13,7 +13,7 @@ use crate::riscv_spec::{
 };
 
 fn int<'a>(string: &'a str, base: u32) -> i64 {
-    // print!("{}", string);
+    print!("{}", string);
     i64::from_str_radix(string, base).unwrap()
 }
 
@@ -51,10 +51,14 @@ fn generate_bytes_i_type(tokens: &Vec<String>) -> Vec<u8> {
     let rs1;
 
     if BRACKET_INSTRUCTIONS.contains(&instruction.as_str()) {
-        let rs1_string = REGISTER_BITS[tokens[2].split("(").nth(1).unwrap()];
-        rs1 = int(&rs1_string[..rs1_string.len() - 1], 2) & 0xFFFFFFFF;
+        // println!("{}",tokens[2]);
+        // let rs1_string = REGISTER_BITS[tokens[2].split("(").nth(1).unwrap()];
+        // rs1 = int(&rs1_string[..rs1_string.len() - 1], 2) & 0xFFFFFFFF;
+        // // TODO handle none base 10
+        // imm = int(tokens[2].split("(").nth(0).unwrap(), 10);
+        rs1 = int(REGISTER_BITS[&tokens[3]], 2);
         // TODO handle none base 10
-        imm = int(tokens[2].split("(").nth(0).unwrap(), 10);
+        imm = int(&tokens[2], 10) & 0xFFFFFFFF;
     } else {
         // println!("{:?}",tokens);
         rs1 = int(REGISTER_BITS[&tokens[2]], 2);
@@ -126,6 +130,7 @@ fn generate_bytes_b_type(tokens: &Vec<String>) -> Vec<u8> {
 fn generate_bytes_j_type(tokens: &Vec<String>) -> Vec<u8> {
     let instruction = tokens[0].to_lowercase();
     let opcode = int(OPCODE_BITS[&instruction], 2);
+    println!("{}",tokens[1]);
     let rd = int(REGISTER_BITS[&tokens[1]], 2);
     // TODO deal with none base 10 cases
     let imm = int(&tokens[2], 10);
@@ -140,7 +145,7 @@ fn generate_bytes_j_type(tokens: &Vec<String>) -> Vec<u8> {
     int_to_4_byte_vec(binary)
 }
 
-fn remove_labels_from_tokens(tokens: &mut Vec<String>, labels: &HashMap<String,i64>) {
+fn remove_labels_from_tokens(tokens: &mut Vec<String>, labels: &HashMap<String, i64>) {
     for item in tokens.iter_mut() {
         // println!("{}",item);
         if let Some(replacement) = labels.get(item) {
@@ -153,7 +158,7 @@ fn remove_labels_from_tokens(tokens: &mut Vec<String>, labels: &HashMap<String,i
 lazy_static! {
     static ref INSTRUCTION_METHOD_MAP: HashMap<String, fn(&Vec<String>) -> Vec<u8>> = {
         let mut map: HashMap<String, fn(&Vec<String>) -> Vec<u8>> = HashMap::new();
-        let pairs: [(&Vec<&str>, fn (&Vec<String>) -> Vec<u8>); 6] = [
+        let pairs: [(&Vec<&str>, fn(&Vec<String>) -> Vec<u8>); 6] = [
             (&Vec::from(R_TYPE_INSTRUCTIONS), generate_bytes_r_type),
             (&Vec::from(I_TYPE_INSTRUCTIONS), generate_bytes_i_type),
             (&Vec::from(S_TYPE_INSTRUCTIONS), generate_bytes_s_type),
@@ -171,17 +176,17 @@ lazy_static! {
     };
 }
 
-fn generate_bytes_line(line: Line, labels: &HashMap<String,i64>) -> Vec<u8> {
+fn generate_bytes_line(line: Line, labels: &HashMap<String, i64>) -> Vec<u8> {
     // TODO
     // Create map of opcode to function
     // Create function for each type of instruction
     //
     match line {
         Line::ASTInstruction(mut ast_instruction) => {
-            println!("{:?}",(*ast_instruction).tokens);
+            println!("{:?}", (*ast_instruction).tokens);
             let instruction: String = (*ast_instruction).tokens[0].to_string();
             if instruction.to_lowercase() == "ecall" {
-                return int_to_4_byte_vec(int("00000073",16));
+                return int_to_4_byte_vec(int("00000073", 16));
             }
             let method = INSTRUCTION_METHOD_MAP[&instruction];
             remove_labels_from_tokens(&mut (*ast_instruction).tokens, labels);
@@ -231,6 +236,15 @@ fn pseudo_parse_line(line: Line) -> Vec<Box<Line>> {
                     ];
                 }
                 vec![]
+            }
+
+            "j" => {
+                return vec![Box::new(Line::ASTInstruction(Box::new(
+                    ASTInstruction::new(vec![
+                        "addi".to_string(),
+                        "x0".to_string(),
+                    ]),
+                )))];
             }
 
             _ => vec![Box::new(Line::ASTInstruction(ast_instruction))],
@@ -308,7 +322,7 @@ pub fn assemble(program_text: &String) -> Vec<u8> {
     // println!("{:?}", &cleaned_lines);
     // println!("{:?}", &labels);
     let mut binary: Vec<u8> = vec![];
-    for line in cleaned_lines.lines{
+    for line in cleaned_lines.lines {
         binary.append(&mut generate_bytes_line(*line, &labels));
     }
     print!("{:?}", &binary);

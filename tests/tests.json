@@ -113,7 +113,7 @@
         },
         {
                 "name": "test_beq_pos",
-                "code": "\nli x2, 5\nli x1, 5\nbeq x1, x2, equal_branch\nli x3, 0\nj end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
+                "code": "\nli x2, 5\nli x1, 5\nbeq x1, x2, equal_branch\nli x3, 0\njal x0 end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
                 "result": [
                         3,
                         10
@@ -121,7 +121,7 @@
         },
         {
                 "name": "test_beq_false",
-                "code": "\nli x2, 5\nli x1, 6\nbeq x1, x2, equal_branch\nli x3, 0\nj end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
+                "code": "\nli x2, 5\nli x1, 6\nbeq x1, x2, equal_branch\nli x3, 0\njal x0 end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
                 "result": [
                         3,
                         0
@@ -129,7 +129,7 @@
         },
         {
                 "name": "test_bne_pos",
-                "code": "\nli x2, 5\nli x1, 6\nbne x1, x2, equal_branch\nli x3, 0\nj end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
+                "code": "\nli x2, 5\nli x1, 6\nbne x1, x2, equal_branch\nli x3, 0\njal x0 end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
                 "result": [
                         3,
                         10
@@ -137,7 +137,7 @@
         },
         {
                 "name": "test_bne_false",
-                "code": "\nli x2, 5\nli x1, 5\nbne x1, x2, equal_branch\nli x3, 0\nj end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
+                "code": "\nli x2, 5\nli x1, 5\nbne x1, x2, equal_branch\nli x3, 0\njal x0 end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
                 "result": [
                         3,
                         0
@@ -145,7 +145,7 @@
         },
         {
                 "name": "test_blt_pos",
-                "code": "\nli x2, 5\nli x1, 4\nblt x1, x2, equal_branch\nli x3, 0\nj end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
+                "code": "\nli x2, 5\nli x1, 4\nblt x1, x2, equal_branch\nli x3, 0\njal x0 end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
                 "result": [
                         3,
                         10
@@ -153,7 +153,7 @@
         },
         {
                 "name": "test_blt_false",
-                "code": "\nli x2, 5\nli x1, 8\nblt x1, x2, equal_branch\nli x3, 0\nj end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
+                "code": "\nli x2, 5\nli x1, 8\nblt x1, x2, equal_branch\nli x3, 0\njal x0 end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
                 "result": [
                         3,
                         0
@@ -161,7 +161,7 @@
         },
         {
                 "name": "test_bge_pos",
-                "code": "\nli x2, 4\nli x1, 5\nbge x1, x2, equal_branch\nli x3, 0\nj end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
+                "code": "\nli x2, 4\nli x1, 5\nbge x1, x2, equal_branch\nli x3, 0\njal x0 end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
                 "result": [
                         3,
                         10
@@ -169,7 +169,7 @@
         },
         {
                 "name": "test_bge_false",
-                "code": "\nli x2, 8\nli x1, 5\nbge x1, x2, equal_branch\nli x3, 0\nj end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
+                "code": "\nli x2, 8\nli x1, 5\nbge x1, x2, equal_branch\nli x3, 0\njal x0 end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
                 "result": [
                         3,
                         0
@@ -177,7 +177,7 @@
         },
         {
                 "name": "test_bge_eq",
-                "code": "\nli x2, 4\nli x1, 4\nbge x1, x2, equal_branch\nli x3, 0\nj end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
+                "code": "\nli x2, 4\nli x1, 4\nbge x1, x2, equal_branch\nli x3, 0\njal x0 end_program\nequal_branch: li x3, 10\nend_program: addi x17, x0, 10\necall\n        ",
                 "result": [
                         3,
                         10
@@ -185,7 +185,7 @@
         },
         {
                 "name": "test_jalr",
-                "code": "\nlw x1, start_addr(x0)\njalr x6 0(x1)\nli x3 10\nj end_program\nstart: li x3 17\nend_program: addi x17, x0, 10\necall\nstart_addr:  .word start\n        ",
+                "code": "\nlw x1, start_addr(x0)\njalr x6 0(x1)\nli x3 10\njal x0 end_program\nstart: li x3 17\nend_program: addi x17, x0, 10\necall\nstart_addr:  .word start\n        ",
                 "result": [
                         3,
                         17

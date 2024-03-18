@@ -680,24 +680,24 @@ pub fn decode_instruction(cpu_state: &mut CPUState) -> bool {
             }
         }
 
-        ///////////////////////////////////////////// Custom GPIO Extensions /////////////////////////////////////////////
-        0b1111000 => match funct3 {
-            000 => {
-                // Set Config
-                cpu_state.pc += 4;
-                let config_address = cpu_state.read_mem(cpu_state.pc as usize) as usize;
-                let bytes_slice = &cpu_state.memory_bytes
-                    [config_address..(config_address + std::mem::size_of::<GPIOState>())];
-                let struct_ref = unsafe { &*(bytes_slice.as_ptr() as *const GPIOState) };
-                cpu_state.gpio_states[imm_i as usize] = *struct_ref;
-                // TODO check for any connections to this gpio and update them
-            }
-            001 => {
-                // Reset Config
-                cpu_state.gpio_states[imm_i as usize] = GPIOState::new();
-            }
-            _ => panic!("Unknown funct3: {}", funct3),
-        },
+        // ///////////////////////////////////////////// Custom GPIO Extensions /////////////////////////////////////////////
+        // 0b1111000 => match funct3 {
+        //     000 => {
+        //         // Set Config
+        //         cpu_state.pc += 4;
+        //         let config_address = cpu_state.read_mem(cpu_state.pc as usize) as usize;
+        //         let bytes_slice = &cpu_state.memory_bytes
+        //             [config_address..(config_address + std::mem::size_of::<GPIOState>())];
+        //         let struct_ref = unsafe { &*(bytes_slice.as_ptr() as *const GPIOState) };
+        //         cpu_state.gpio_states[imm_i as usize] = *struct_ref;
+        //         // TODO check for any connections to this gpio and update them
+        //     }
+        //     001 => {
+        //         // Reset Config
+        //         cpu_state.gpio_states[imm_i as usize] = GPIOState::new();
+        //     }
+        //     _ => panic!("Unknown funct3: {}", funct3),
+        // },
 
         _ => {
             panic!("Unknown opcode: {:b}", opcode);
@@ -716,7 +716,7 @@ fn get_file_as_byte_vec(filename: &str) -> Vec<u8> {
     return buffer;
 }
 
-pub fn interpret(file_name: &str, cpu_state: &mut CPUState) -> io::Result<()> {
+pub fn interpret_file(file_name: &str, cpu_state: &mut CPUState) -> io::Result<()> {
     let buffer: Vec<u8> = get_file_as_byte_vec(file_name);
     for i in 0..buffer.len() {
         let index: usize = (i / 4) * 4 + 3 - (i % 4);
@@ -741,4 +741,31 @@ pub fn interpret(file_name: &str, cpu_state: &mut CPUState) -> io::Result<()> {
     }
 
     return Ok(());
+}
+
+pub fn interpret(bytes: &Vec<u8>,  cpu_state: &mut CPUState) {
+    interpret_max_cycles(bytes, cpu_state, 0);
+}
+
+pub fn interpret_max_cycles(bytes: &Vec<u8>,  cpu_state: &mut CPUState, max_cycles: usize) {
+    for i in 0..bytes.len() {
+        let index: usize = (i / 4) * 4 + 3 - (i % 4);
+        cpu_state.memory_bytes[index] = bytes[i];
+    }
+
+    let mut count = 0;
+    loop {
+        count += 1;
+        let ecall: bool = decode_instruction(cpu_state);
+        cpu_state.registers[0] = 0;
+        if ecall {
+            println!("{}", cpu_state.registers[17]);
+            if cpu_state.registers[17] == 10 {
+                break;
+            }
+        }
+        if (count >= max_cycles) && (max_cycles != 0) {
+            assert!(false);
+        }
+    }
 }

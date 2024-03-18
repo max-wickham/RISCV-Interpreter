@@ -10,18 +10,6 @@ struct TestObject {
     result: (usize, i64),
 }
 
-fn deserialize_test_objects<'de, D>(deserializer: D) -> Result<Vec<TestObject>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let tests: Vec<serde_json::Value> = Deserialize::deserialize(deserializer)?;
-    let mut result = Vec::new();
-    for test in tests {
-        result.push(serde_json::from_value::<TestObject>(test).unwrap());
-    }
-    Ok(result)
-}
-
 #[proc_macro]
 pub fn generate_tests(input: TokenStream) -> TokenStream {
     let file_name_lit = parse_macro_input!(input as LitStr);
@@ -45,17 +33,22 @@ pub fn generate_tests(input: TokenStream) -> TokenStream {
     };
 
     let mut tests = Vec::new();
-    for (index, test) in input.into_iter().enumerate() {
-        // let test_name = Ident::new(&format!("test_{}", index), proc_macro2::Span::call_site());
+    for (_, test) in input.into_iter().enumerate() {
         let test_name = Ident::new(test.name.as_str(), proc_macro2::Span::call_site());
-        let struct_name = Ident::new("MyStruct", proc_macro2::Span::call_site());
-        // let code = Ident::new(test.code.as_str(), proc_macro2::Span::call_site());
         let code = test.code.as_str();
+        let result_register = test.result.0;
+        let result = test.result.1;
         tests.push(quote! {
             #[test]
             fn #test_name() {
                 let binary: Vec<u8> = assemble(&String::from(#code));
                 println!("{:?}",binary);
+                let mut cpu_state = CPUState::new();
+                interpret_max_cycles(&binary, &mut cpu_state, 20);
+                assert_eq!(
+                    cpu_state.registers[#result_register as usize] as u32,
+                    #result as u32
+                );
             }
         });
     }
